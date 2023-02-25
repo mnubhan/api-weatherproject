@@ -1,9 +1,16 @@
 const express = require("express");
 const https = require("https");
+const bodyParser = require("body-parser");
 const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
 app.get("/", function (req, res) {
-  const url =
-    "https://api.openweathermap.org/data/2.5/weather?q=Kuala Lumpur&appid=5400310b05081053d9190cc8348b501f&units=metric";
+  res.sendFile(__dirname + "/index.html");
+});
+app.post("/", function (req, res) {
+  const city = req.body.cityName;
+  const units = "metric";
+  const apikey = "5400310b05081053d9190cc8348b501f";
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apikey}&units=${units}`;
   https.get(url, function (response) {
     response.on("data", (data) => {
       const weatherData = JSON.parse(data);
@@ -19,6 +26,7 @@ app.get("/", function (req, res) {
     });
   });
 });
+
 app.listen(3000, function () {
   console.log("Server started on port 3000");
 });
